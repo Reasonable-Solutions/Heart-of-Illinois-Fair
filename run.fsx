@@ -21,13 +21,13 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
 
         match name with
         | Some x ->
-            return req.CreateResponse(HttpStatusCode.OK, "Hello " + x.Value);
+            return req.CreateResponse(HttpStatusCode.OK, "Hello, migration " + x.Value);
         | None ->
             let! data = req.Content.ReadAsStringAsync() |> Async.AwaitTask
 
             if not (String.IsNullOrEmpty(data)) then
                 let named = JsonConvert.DeserializeObject<Named>(data)
-                return req.CreateResponse(HttpStatusCode.OK, "Hello " + named.name);
+                return req.CreateResponse(HttpStatusCode.OK, "Hello, heres the body, migration " + named.name);
             else
                 return req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value");
     } |> Async.RunSynchronously
