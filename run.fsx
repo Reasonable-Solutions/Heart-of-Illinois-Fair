@@ -29,5 +29,5 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
                 let named = JsonConvert.DeserializeObject<Named>(data)
                 return req.CreateResponse(HttpStatusCode.OK, "Hello, heres the body, migration " + named.name);
             else
-                return req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value");
+                return req.CreateResponse(HttpStatusCode.BadRequest, "Here's a secret" + System.Environment.GetEnvironmentVariable("SECRET"));
     } |> Async.RunSynchronously
