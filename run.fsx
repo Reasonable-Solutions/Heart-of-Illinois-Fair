@@ -21,13 +21,17 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
 
         match name with
         | Some x ->
-            return req.CreateResponse(HttpStatusCode.OK, "Hello, migration " + x.Value);
+            log.Info(sprintf
+            "got a query param name! " + x.Value)
+            return req.CreateResponse(HttpStatusCode.OK, "QueryParam: " + x.Value);
         | None ->
+            log.Info(sprintf
+            "No param value, trying body")
             let! data = req.Content.ReadAsStringAsync() |> Async.AwaitTask
 
             if not (String.IsNullOrEmpty(data)) then
                 let named = JsonConvert.DeserializeObject<Named>(data)
-                return req.CreateResponse(HttpStatusCode.OK, "Hello, heres the body, migration " + named.name);
+                return req.CreateResponse(HttpStatusCode.OK, "name from body: " + named.name);
             else
                 return req.CreateResponse(HttpStatusCode.BadRequest, "Here's a secret" + System.Environment.GetEnvironmentVariable("SECRET"));
     } |> Async.RunSynchronously
